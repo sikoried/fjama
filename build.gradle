@@ -2,7 +2,6 @@ group 'com.github.sikoried.fjama'
 version = '1.0.3'
 
 apply plugin: 'java'
-apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 
