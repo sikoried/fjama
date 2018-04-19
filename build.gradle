@@ -5,15 +5,8 @@ apply plugin: 'java'
 
 sourceCompatibility = 1.8
 
-repositories {
-  jcenter()
-}
-
 jar {
   manifest {
     attributes 'Implementation-Title': 'fjama', 'Implementation-Version': version
   }
-}
-
-dependencies {
 }
