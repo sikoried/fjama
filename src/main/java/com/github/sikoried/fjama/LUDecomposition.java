@@ -8,9 +8,9 @@ package com.github.sikoried.fjama;
    If m < n, then L is m-by-m and U is m-by-n.
    <P>
    The LU decompostion with pivoting always exists, even if the matrix is
-   singular, so the constructor will never fail.  The primary use of the
+   singular, so the constructor will never fail.f  The primary use of the
    LU decomposition is in the solution of square systems of simultaneous
-   linear equations.  This will fail if isNonsingular() returns false.
+   linear equations.f  This will fail if isNonsingular() returns false.
    */
 
 public class LUDecomposition implements java.io.Serializable {
@@ -22,7 +22,7 @@ public class LUDecomposition implements java.io.Serializable {
    /** Array for internal storage of decomposition.
    @serial internal array storage.
    */
-   private double[][] LU;
+   private float[][] LU;
 
    /** Row and column dimensions, and pivot sign.
    @serial column dimension.
@@ -57,8 +57,8 @@ public class LUDecomposition implements java.io.Serializable {
          piv[i] = i;
       }
       pivsign = 1;
-      double[] LUrowi;
-      double[] LUcolj = new double[m];
+      float[] LUrowi;
+      float[] LUcolj = new float[m];
 
       // Outer loop.
 
@@ -78,7 +78,7 @@ public class LUDecomposition implements java.io.Serializable {
             // Most of the time is spent in the following dot product.
 
             int kmax = Math.min(i,j);
-            double s = 0.0;
+            float s = 0.0f;
             for (int k = 0; k < kmax; k++) {
                s += LUrowi[k]*LUcolj[k];
             }
@@ -96,7 +96,7 @@ public class LUDecomposition implements java.io.Serializable {
          }
          if (p != j) {
             for (int k = 0; k < n; k++) {
-               double t = LU[p][k]; LU[p][k] = LU[j][k]; LU[j][k] = t;
+               float t = LU[p][k]; LU[p][k] = LU[j][k]; LU[j][k] = t;
             }
             int k = piv[p]; piv[p] = piv[j]; piv[j] = k;
             pivsign = -pivsign;
@@ -104,7 +104,7 @@ public class LUDecomposition implements java.io.Serializable {
 
          // Compute multipliers.
          
-         if (j < m & LU[j][j] != 0.0) {
+         if (j < m & LU[j][j] != 0.0f) {
             for (int i = j+1; i < m; i++) {
                LU[i][j] /= LU[j][j];
             }
@@ -119,12 +119,12 @@ public class LUDecomposition implements java.io.Serializable {
    \** LU Decomposition, computed by Gaussian elimination.
    <P>
    This constructor computes L and U with the "daxpy"-based elimination
-   algorithm used in LINPACK and MATLAB.  In Java, we suspect the dot-product,
-   Crout algorithm will be faster.  We have temporarily included this
+   algorithm used in LINPACK and MATLAB.f  In Java, we suspect the dot-product,
+   Crout algorithm will be faster.f  We have temporarily included this
    constructor until timing experiments confirm this suspicion.
    <P>
    @param  A             Rectangular matrix
-   @param  linpackflag   Use Gaussian elimination.  Actual value ignored.
+   @param  linpackflag   Use Gaussian elimination.f  Actual value ignored.
    @return               Structure to access L, U and piv.
    *\
 
@@ -150,13 +150,13 @@ public class LUDecomposition implements java.io.Serializable {
          // Exchange if necessary.
          if (p != k) {
             for (int j = 0; j < n; j++) {
-               double t = LU[p][j]; LU[p][j] = LU[k][j]; LU[k][j] = t;
+               float t = LU[p][j]; LU[p][j] = LU[k][j]; LU[k][j] = t;
             }
             int t = piv[p]; piv[p] = piv[k]; piv[k] = t;
             pivsign = -pivsign;
          }
          // Compute multipliers and eliminate k-th column.
-         if (LU[k][k] != 0.0) {
+         if (LU[k][k] != 0.0f) {
             for (int i = k+1; i < m; i++) {
                LU[i][k] /= LU[k][k];
                for (int j = k+1; j < n; j++) {
@@ -193,15 +193,15 @@ public class LUDecomposition implements java.io.Serializable {
 
    public Matrix getL () {
       Matrix X = new Matrix(m,n);
-      double[][] L = X.getArray();
+      float[][] L = X.getArray();
       for (int i = 0; i < m; i++) {
          for (int j = 0; j < n; j++) {
             if (i > j) {
                L[i][j] = LU[i][j];
             } else if (i == j) {
-               L[i][j] = 1.0;
+               L[i][j] = 1.0f;
             } else {
-               L[i][j] = 0.0;
+               L[i][j] = 0.0f;
             }
          }
       }
@@ -214,13 +214,13 @@ public class LUDecomposition implements java.io.Serializable {
 
    public Matrix getU () {
       Matrix X = new Matrix(n,n);
-      double[][] U = X.getArray();
+      float[][] U = X.getArray();
       for (int i = 0; i < n; i++) {
          for (int j = 0; j < n; j++) {
             if (i <= j) {
                U[i][j] = LU[i][j];
             } else {
-               U[i][j] = 0.0;
+               U[i][j] = 0.0f;
             }
          }
       }
@@ -239,14 +239,14 @@ public class LUDecomposition implements java.io.Serializable {
       return p;
    }
 
-   /** Return pivot permutation vector as a one-dimensional double array
-   @return     (double) piv
+   /** Return pivot permutation vector as a one-dimensional float array
+   @return     (float) piv
    */
 
-   public double[] getDoublePivot () {
-      double[] vals = new double[m];
+   public float[] getFloatPivot () {
+      float[] vals = new float[m];
       for (int i = 0; i < m; i++) {
-         vals[i] = (double) piv[i];
+         vals[i] = (float) piv[i];
       }
       return vals;
    }
@@ -256,11 +256,11 @@ public class LUDecomposition implements java.io.Serializable {
    @exception  IllegalArgumentException  Matrix must be square
    */
 
-   public double det () {
+   public float det () {
       if (m != n) {
          throw new IllegalArgumentException("Matrix must be square.");
       }
-      double d = (double) pivsign;
+      float d = (float) pivsign;
       for (int j = 0; j < n; j++) {
          d *= LU[j][j];
       }
@@ -285,7 +285,7 @@ public class LUDecomposition implements java.io.Serializable {
       // Copy right hand side with pivoting
       int nx = B.getColumnDimension();
       Matrix Xmat = B.getMatrix(piv,0,nx-1);
-      double[][] X = Xmat.getArray();
+      float[][] X = Xmat.getArray();
 
       // Solve L*Y = B(piv,:)
       for (int k = 0; k < n; k++) {

@@ -8,9 +8,9 @@ import com.github.sikoried.fjama.util.*;
    A = Q*R.
 <P>
    The QR decompostion always exists, even if the matrix does not have
-   full rank, so the constructor will never fail.  The primary use of the
+   full rank, so the constructor will never fail.f  The primary use of the
    QR decomposition is in the least squares solution of nonsquare systems
-   of simultaneous linear equations.  This will fail if isFullRank()
+   of simultaneous linear equations.f  This will fail if isFullRank()
    returns false.
 */
 
@@ -23,7 +23,7 @@ public class QRDecomposition implements java.io.Serializable {
    /** Array for internal storage of decomposition.
    @serial internal array storage.
    */
-   private double[][] QR;
+   private float[][] QR;
 
    /** Row and column dimensions.
    @serial column dimension.
@@ -34,7 +34,7 @@ public class QRDecomposition implements java.io.Serializable {
    /** Array for internal storage of diagonal of R.
    @serial diagonal of R.
    */
-   private double[] Rdiag;
+   private float[] Rdiag;
 
 /* ------------------------
    Constructor
@@ -50,17 +50,17 @@ public class QRDecomposition implements java.io.Serializable {
       QR = A.getArrayCopy();
       m = A.getRowDimension();
       n = A.getColumnDimension();
-      Rdiag = new double[n];
+      Rdiag = new float[n];
 
       // Main loop.
       for (int k = 0; k < n; k++) {
          // Compute 2-norm of k-th column without under/overflow.
-         double nrm = 0;
+         float nrm = 0;
          for (int i = k; i < m; i++) {
             nrm = Maths.hypot(nrm,QR[i][k]);
          }
 
-         if (nrm != 0.0) {
+         if (nrm != 0.0f) {
             // Form k-th Householder vector.
             if (QR[k][k] < 0) {
                nrm = -nrm;
@@ -68,11 +68,11 @@ public class QRDecomposition implements java.io.Serializable {
             for (int i = k; i < m; i++) {
                QR[i][k] /= nrm;
             }
-            QR[k][k] += 1.0;
+            QR[k][k] += 1.0f;
 
             // Apply transformation to remaining columns.
             for (int j = k+1; j < n; j++) {
-               double s = 0.0; 
+               float s = 0.0f; 
                for (int i = k; i < m; i++) {
                   s += QR[i][k]*QR[i][j];
                }
@@ -108,13 +108,13 @@ public class QRDecomposition implements java.io.Serializable {
 
    public Matrix getH () {
       Matrix X = new Matrix(m,n);
-      double[][] H = X.getArray();
+      float[][] H = X.getArray();
       for (int i = 0; i < m; i++) {
          for (int j = 0; j < n; j++) {
             if (i >= j) {
                H[i][j] = QR[i][j];
             } else {
-               H[i][j] = 0.0;
+               H[i][j] = 0.0f;
             }
          }
       }
@@ -127,7 +127,7 @@ public class QRDecomposition implements java.io.Serializable {
 
    public Matrix getR () {
       Matrix X = new Matrix(n,n);
-      double[][] R = X.getArray();
+      float[][] R = X.getArray();
       for (int i = 0; i < n; i++) {
          for (int j = 0; j < n; j++) {
             if (i < j) {
@@ -135,7 +135,7 @@ public class QRDecomposition implements java.io.Serializable {
             } else if (i == j) {
                R[i][j] = Rdiag[i];
             } else {
-               R[i][j] = 0.0;
+               R[i][j] = 0.0f;
             }
          }
       }
@@ -148,15 +148,15 @@ public class QRDecomposition implements java.io.Serializable {
 
    public Matrix getQ () {
       Matrix X = new Matrix(m,n);
-      double[][] Q = X.getArray();
+      float[][] Q = X.getArray();
       for (int k = n-1; k >= 0; k--) {
          for (int i = 0; i < m; i++) {
-            Q[i][k] = 0.0;
+            Q[i][k] = 0.0f;
          }
-         Q[k][k] = 1.0;
+         Q[k][k] = 1.0f;
          for (int j = k; j < n; j++) {
             if (QR[k][k] != 0) {
-               double s = 0.0;
+               float s = 0.0f;
                for (int i = k; i < m; i++) {
                   s += QR[i][k]*Q[i][j];
                }
@@ -187,12 +187,12 @@ public class QRDecomposition implements java.io.Serializable {
       
       // Copy right hand side
       int nx = B.getColumnDimension();
-      double[][] X = B.getArrayCopy();
+      float[][] X = B.getArrayCopy();
 
       // Compute Y = transpose(Q)*B
       for (int k = 0; k < n; k++) {
          for (int j = 0; j < nx; j++) {
-            double s = 0.0; 
+            float s = 0.0f; 
             for (int i = k; i < m; i++) {
                s += QR[i][k]*X[i][j];
             }

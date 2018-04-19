@@ -2,18 +2,18 @@ package com.github.sikoried.fjama.util;
 
 public class Maths {
 
-   /** sqrt(a^2 + b^2) without under/overflow. **/
+   /** sqrt(a^2 + b^2) without under/overflow.f **/
 
-   public static double hypot(double a, double b) {
-      double r;
+   public static float hypot(float a, float b) {
+      float r;
       if (Math.abs(a) > Math.abs(b)) {
          r = b/a;
-         r = Math.abs(a)*Math.sqrt(1+r*r);
+         r = Math.abs(a) * (float) Math.sqrt(1+r*r);
       } else if (b != 0) {
          r = a/b;
-         r = Math.abs(b)*Math.sqrt(1+r*r);
+         r = Math.abs(b) * (float) Math.sqrt(1+r*r);
       } else {
-         r = 0.0;
+         r = 0.0f;
       }
       return r;
    }

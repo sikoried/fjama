@@ -1,18 +1,18 @@
 package com.github.sikoried.fjama;
 import com.github.sikoried.fjama.util.*;
 
-/** Eigenvalues and eigenvectors of a real matrix. 
+/** Eigenvalues and eigenvectors of a real matrix.f 
 <P>
     If A is symmetric, then A = V*D*V' where the eigenvalue matrix D is
     diagonal and the eigenvector matrix V is orthogonal.
-    I.e. A = V.times(D.times(V.transpose())) and 
+    I.e.f A = V.times(D.times(V.transpose())) and 
     V.times(V.transpose()) equals the identity matrix.
 <P>
     If A is not symmetric, then the eigenvalue matrix D is block diagonal
     with the real eigenvalues in 1-by-1 blocks and any complex eigenvalues,
-    lambda + i*mu, in 2-by-2 blocks, [lambda, mu; -mu, lambda].  The
+    lambda + i*mu, in 2-by-2 blocks, [lambda, mu; -mu, lambda].f  The
     columns of V represent the eigenvectors in the sense that A*V = V*D,
-    i.e. A.times(V) equals V.times(D).  The matrix V may be badly
+    i.e.f A.times(V) equals V.times(D).f  The matrix V may be badly
     conditioned, or even singular, so the validity of the equation
     A = V*D*inverse(V) depends upon V.cond().
 **/
@@ -36,22 +36,22 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    /** Arrays for internal storage of eigenvalues.
    @serial internal storage of eigenvalues.
    */
-   private double[] d, e;
+   private float[] d, e;
 
    /** Array for internal storage of eigenvectors.
    @serial internal storage of eigenvectors.
    */
-   private double[][] V;
+   private float[][] V;
 
    /** Array for internal storage of nonsymmetric Hessenberg form.
    @serial internal storage of nonsymmetric Hessenberg form.
    */
-   private double[][] H;
+   private float[][] H;
 
    /** Working storage for nonsymmetric algorithm.
    @serial working storage for nonsymmetric algorithm.
    */
-   private double[] ort;
+   private float[] ort;
 
 /* ------------------------
    Private Methods
@@ -63,7 +63,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 
    //  This is derived from the Algol procedures tred2 by
    //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
-   //  Auto. Comp., Vol.ii-Linear Algebra, and the corresponding
+   //  Auto.f Comp.f, Vol.ii-Linear Algebra, and the corresponding
    //  Fortran subroutine in EISPACK.
 
       for (int j = 0; j < n; j++) {
@@ -76,17 +76,17 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    
          // Scale to avoid under/overflow.
    
-         double scale = 0.0;
-         double h = 0.0;
+         float scale = 0.0f;
+         float h = 0.0f;
          for (int k = 0; k < i; k++) {
             scale = scale + Math.abs(d[k]);
          }
-         if (scale == 0.0) {
+         if (scale == 0.0f) {
             e[i] = d[i-1];
             for (int j = 0; j < i; j++) {
                d[j] = V[i-1][j];
-               V[i][j] = 0.0;
-               V[j][i] = 0.0;
+               V[i][j] = 0.0f;
+               V[j][i] = 0.0f;
             }
          } else {
    
@@ -96,8 +96,8 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                d[k] /= scale;
                h += d[k] * d[k];
             }
-            double f = d[i-1];
-            double g = Math.sqrt(h);
+            float f = d[i-1];
+            float g = (float) Math.sqrt(h);
             if (f > 0) {
                g = -g;
             }
@@ -105,7 +105,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
             h = h - f * g;
             d[i-1] = f - g;
             for (int j = 0; j < i; j++) {
-               e[j] = 0.0;
+               e[j] = 0.0f;
             }
    
             // Apply similarity transformation to remaining columns.
@@ -120,12 +120,12 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                }
                e[j] = g;
             }
-            f = 0.0;
+            f = 0.0f;
             for (int j = 0; j < i; j++) {
                e[j] /= h;
                f += e[j] * d[j];
             }
-            double hh = f / (h + h);
+            float hh = f / (h + h);
             for (int j = 0; j < i; j++) {
                e[j] -= hh * d[j];
             }
@@ -136,7 +136,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                   V[k][j] -= (f * e[k] + g * d[k]);
                }
                d[j] = V[i-1][j];
-               V[i][j] = 0.0;
+               V[i][j] = 0.0f;
             }
          }
          d[i] = h;
@@ -146,14 +146,14 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    
       for (int i = 0; i < n-1; i++) {
          V[n-1][i] = V[i][i];
-         V[i][i] = 1.0;
-         double h = d[i+1];
-         if (h != 0.0) {
+         V[i][i] = 1.0f;
+         float h = d[i+1];
+         if (h != 0.0f) {
             for (int k = 0; k <= i; k++) {
                d[k] = V[k][i+1] / h;
             }
             for (int j = 0; j <= i; j++) {
-               double g = 0.0;
+               float g = 0.0f;
                for (int k = 0; k <= i; k++) {
                   g += V[k][i+1] * V[k][j];
                }
@@ -163,15 +163,15 @@ public class EigenvalueDecomposition implements java.io.Serializable {
             }
          }
          for (int k = 0; k <= i; k++) {
-            V[k][i+1] = 0.0;
+            V[k][i+1] = 0.0f;
          }
       }
       for (int j = 0; j < n; j++) {
          d[j] = V[n-1][j];
-         V[n-1][j] = 0.0;
+         V[n-1][j] = 0.0f;
       }
-      V[n-1][n-1] = 1.0;
-      e[0] = 0.0;
+      V[n-1][n-1] = 1.0f;
+      e[0] = 0.0f;
    } 
 
    // Symmetric tridiagonal QL algorithm.
@@ -180,17 +180,17 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 
    //  This is derived from the Algol procedures tql2, by
    //  Bowdler, Martin, Reinsch, and Wilkinson, Handbook for
-   //  Auto. Comp., Vol.ii-Linear Algebra, and the corresponding
+   //  Auto.f Comp.f, Vol.ii-Linear Algebra, and the corresponding
    //  Fortran subroutine in EISPACK.
    
       for (int i = 1; i < n; i++) {
          e[i-1] = e[i];
       }
-      e[n-1] = 0.0;
+      e[n-1] = 0.0f;
    
-      double f = 0.0;
-      double tst1 = 0.0;
-      double eps = Math.pow(2.0,-52.0);
+      float f = 0.0f;
+      float tst1 = 0.0f;
+      float eps = (float) Math.pow(2.0f,-52.0f);
       for (int l = 0; l < n; l++) {
 
          // Find small subdiagonal element
@@ -210,20 +210,20 @@ public class EigenvalueDecomposition implements java.io.Serializable {
          if (m > l) {
             int iter = 0;
             do {
-               iter = iter + 1;  // (Could check iteration count here.)
+               iter = iter + 1;  // (Could check iteration count here.f)
    
                // Compute implicit shift
    
-               double g = d[l];
-               double p = (d[l+1] - g) / (2.0 * e[l]);
-               double r = Maths.hypot(p,1.0);
+               float g = d[l];
+               float p = (d[l+1] - g) / (2.0f * e[l]);
+               float r = Maths.hypot(p,1.0f);
                if (p < 0) {
                   r = -r;
                }
                d[l] = e[l] / (p + r);
                d[l+1] = e[l] * (p + r);
-               double dl1 = d[l+1];
-               double h = g - d[l];
+               float dl1 = d[l+1];
+               float h = g - d[l];
                for (int i = l+2; i < n; i++) {
                   d[i] -= h;
                }
@@ -232,12 +232,12 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                // Implicit QL transformation.
    
                p = d[m];
-               double c = 1.0;
-               double c2 = c;
-               double c3 = c;
-               double el1 = e[l+1];
-               double s = 0.0;
-               double s2 = 0.0;
+               float c = 1.0f;
+               float c2 = c;
+               float c3 = c;
+               float el1 = e[l+1];
+               float s = 0.0f;
+               float s2 = 0.0f;
                for (int i = m-1; i >= l; i--) {
                   c3 = c2;
                   c2 = c;
@@ -268,14 +268,14 @@ public class EigenvalueDecomposition implements java.io.Serializable {
             } while (Math.abs(e[l]) > eps*tst1);
          }
          d[l] = d[l] + f;
-         e[l] = 0.0;
+         e[l] = 0.0f;
       }
      
       // Sort eigenvalues and corresponding vectors.
    
       for (int i = 0; i < n-1; i++) {
          int k = i;
-         double p = d[i];
+         float p = d[i];
          for (int j = i+1; j < n; j++) {
             if (d[j] < p) {
                k = j;
@@ -299,7 +299,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    private void orthes () {
    
       //  This is derived from the Algol procedures orthes and ortran,
-      //  by Martin and Wilkinson, Handbook for Auto. Comp.,
+      //  by Martin and Wilkinson, Handbook for Auto.f Comp.f,
       //  Vol.ii-Linear Algebra, and the corresponding
       //  Fortran subroutines in EISPACK.
    
@@ -310,20 +310,20 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    
          // Scale column.
    
-         double scale = 0.0;
+         float scale = 0.0f;
          for (int i = m; i <= high; i++) {
             scale = scale + Math.abs(H[i][m-1]);
          }
-         if (scale != 0.0) {
+         if (scale != 0.0f) {
    
             // Compute Householder transformation.
    
-            double h = 0.0;
+            float h = 0.0f;
             for (int i = high; i >= m; i--) {
                ort[i] = H[i][m-1]/scale;
                h += ort[i] * ort[i];
             }
-            double g = Math.sqrt(h);
+            float g = (float) Math.sqrt(h);
             if (ort[m] > 0) {
                g = -g;
             }
@@ -334,7 +334,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
             // H = (I-u*u'/h)*H*(I-u*u')/h)
    
             for (int j = m; j < n; j++) {
-               double f = 0.0;
+               float f = 0.0f;
                for (int i = high; i >= m; i--) {
                   f += ort[i]*H[i][j];
                }
@@ -345,7 +345,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
            }
    
            for (int i = 0; i <= high; i++) {
-               double f = 0.0;
+               float f = 0.0f;
                for (int j = high; j >= m; j--) {
                   f += ort[j]*H[i][j];
                }
@@ -363,21 +363,21 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 
       for (int i = 0; i < n; i++) {
          for (int j = 0; j < n; j++) {
-            V[i][j] = (i == j ? 1.0 : 0.0);
+            V[i][j] = (i == j ? 1.0f : 0.0f);
          }
       }
 
       for (int m = high-1; m >= low+1; m--) {
-         if (H[m][m-1] != 0.0) {
+         if (H[m][m-1] != 0.0f) {
             for (int i = m+1; i <= high; i++) {
                ort[i] = H[i][m-1];
             }
             for (int j = m; j <= high; j++) {
-               double g = 0.0;
+               float g = 0.0f;
                for (int i = m; i <= high; i++) {
                   g += ort[i] * V[i][j];
                }
-               // Double division avoids possible underflow
+               // Float division avoids possible underflow
                g = (g / ort[m]) / H[m][m-1];
                for (int i = m; i <= high; i++) {
                   V[i][j] += g * ort[i];
@@ -390,9 +390,9 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 
    // Complex scalar division.
 
-   private transient double cdivr, cdivi;
-   private void cdiv(double xr, double xi, double yr, double yi) {
-      double r,d;
+   private transient float cdivr, cdivi;
+   private void cdiv(float xr, float xi, float yr, float yi) {
+      float r,d;
       if (Math.abs(yr) > Math.abs(yi)) {
          r = yi/yr;
          d = yr + r*yi;
@@ -412,7 +412,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    private void hqr2 () {
    
       //  This is derived from the Algol procedure hqr2,
-      //  by Martin and Wilkinson, Handbook for Auto. Comp.,
+      //  by Martin and Wilkinson, Handbook for Auto.f Comp.f,
       //  Vol.ii-Linear Algebra, and the corresponding
       //  Fortran subroutine in EISPACK.
    
@@ -422,17 +422,17 @@ public class EigenvalueDecomposition implements java.io.Serializable {
       int n = nn-1;
       int low = 0;
       int high = nn-1;
-      double eps = Math.pow(2.0,-52.0);
-      double exshift = 0.0;
-      double p=0,q=0,r=0,s=0,z=0,t,w,x,y;
+      float eps = (float) Math.pow(2.0f,-52.0f);
+      float exshift = 0.0f;
+      float p=0,q=0,r=0,s=0,z=0,t,w,x,y;
    
       // Store roots isolated by balanc and compute matrix norm
    
-      double norm = 0.0;
+      float norm = 0.0f;
       for (int i = 0; i < nn; i++) {
          if (i < low | i > high) {
             d[i] = H[i][i];
-            e[i] = 0.0;
+            e[i] = 0.0f;
          }
          for (int j = Math.max(i-1,0); j < nn; j++) {
             norm = norm + Math.abs(H[i][j]);
@@ -449,7 +449,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
          int l = n;
          while (l > low) {
             s = Math.abs(H[l-1][l-1]) + Math.abs(H[l][l]);
-            if (s == 0.0) {
+            if (s == 0.0f) {
                s = norm;
             }
             if (Math.abs(H[l][l-1]) < eps * s) {
@@ -464,7 +464,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
          if (l == n) {
             H[n][n] = H[n][n] + exshift;
             d[n] = H[n][n];
-            e[n] = 0.0;
+            e[n] = 0.0f;
             n--;
             iter = 0;
    
@@ -472,9 +472,9 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    
          } else if (l == n-1) {
             w = H[n][n-1] * H[n-1][n];
-            p = (H[n-1][n-1] - H[n][n]) / 2.0;
+            p = (H[n-1][n-1] - H[n][n]) / 2.0f;
             q = p * p + w;
-            z = Math.sqrt(Math.abs(q));
+            z = (float) Math.sqrt(Math.abs(q));
             H[n][n] = H[n][n] + exshift;
             H[n-1][n-1] = H[n-1][n-1] + exshift;
             x = H[n][n];
@@ -489,16 +489,16 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                }
                d[n-1] = x + z;
                d[n] = d[n-1];
-               if (z != 0.0) {
+               if (z != 0.0f) {
                   d[n] = x - w / z;
                }
-               e[n-1] = 0.0;
-               e[n] = 0.0;
+               e[n-1] = 0.0f;
+               e[n] = 0.0f;
                x = H[n][n-1];
                s = Math.abs(x) + Math.abs(z);
                p = x / s;
                q = z / s;
-               r = Math.sqrt(p * p+q * q);
+               r = (float) Math.sqrt(p * p+q * q);
                p = p / r;
                q = q / r;
    
@@ -544,8 +544,8 @@ public class EigenvalueDecomposition implements java.io.Serializable {
             // Form shift
    
             x = H[n][n];
-            y = 0.0;
-            w = 0.0;
+            y = 0.0f;
+            w = 0.0f;
             if (l < n) {
                y = H[n-1][n-1];
                w = H[n][n-1] * H[n-1][n];
@@ -559,30 +559,30 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                   H[i][i] -= x;
                }
                s = Math.abs(H[n][n-1]) + Math.abs(H[n-1][n-2]);
-               x = y = 0.75 * s;
-               w = -0.4375 * s * s;
+               x = y = 0.75f * s;
+               w = -0.4375f * s * s;
             }
 
             // MATLAB's new ad hoc shift
 
             if (iter == 30) {
-                s = (y - x) / 2.0;
+                s = (y - x) / 2.0f;
                 s = s * s + w;
                 if (s > 0) {
-                    s = Math.sqrt(s);
+                    s = (float) Math.sqrt(s);
                     if (y < x) {
                        s = -s;
                     }
-                    s = x - w / ((y - x) / 2.0 + s);
+                    s = x - w / ((y - x) / 2.0f + s);
                     for (int i = low; i <= n; i++) {
                        H[i][i] -= s;
                     }
                     exshift += s;
-                    x = y = w = 0.964;
+                    x = y = w = 0.964f;
                 }
             }
    
-            iter = iter + 1;   // (Could check iteration count here.)
+            iter = iter + 1;   // (Could check iteration count here.f)
    
             // Look for two consecutive small sub-diagonal elements
    
@@ -610,13 +610,13 @@ public class EigenvalueDecomposition implements java.io.Serializable {
             }
    
             for (int i = m+2; i <= n; i++) {
-               H[i][i-2] = 0.0;
+               H[i][i-2] = 0.0f;
                if (i > m+2) {
-                  H[i][i-3] = 0.0;
+                  H[i][i-3] = 0.0f;
                }
             }
    
-            // Double QR step involving rows l:n and columns m:n
+            // Float QR step involving rows l:n and columns m:n
    
 
             for (int k = m; k <= n-1; k++) {
@@ -624,9 +624,9 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                if (k != m) {
                   p = H[k][k-1];
                   q = H[k+1][k-1];
-                  r = (notlast ? H[k+2][k-1] : 0.0);
+                  r = (notlast ? H[k+2][k-1] : 0.0f);
                   x = Math.abs(p) + Math.abs(q) + Math.abs(r);
-                  if (x == 0.0) {
+                  if (x == 0.0f) {
                       continue;
                   }
                   p = p / x;
@@ -634,7 +634,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                   r = r / x;
                }
 
-               s = Math.sqrt(p * p + q * q + r * r);
+               s = (float) Math.sqrt(p * p + q * q + r * r);
                if (p < 0) {
                   s = -s;
                }
@@ -693,7 +693,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
       
       // Backsubstitute to find vectors of upper triangular form
 
-      if (norm == 0.0) {
+      if (norm == 0.0f) {
          return;
       }
    
@@ -705,20 +705,20 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    
          if (q == 0) {
             int l = n;
-            H[n][n] = 1.0;
+            H[n][n] = 1.0f;
             for (int i = n-1; i >= 0; i--) {
                w = H[i][i] - p;
-               r = 0.0;
+               r = 0.0f;
                for (int j = l; j <= n; j++) {
                   r = r + H[i][j] * H[j][n];
                }
-               if (e[i] < 0.0) {
+               if (e[i] < 0.0f) {
                   z = w;
                   s = r;
                } else {
                   l = i;
-                  if (e[i] == 0.0) {
-                     if (w != 0.0) {
+                  if (e[i] == 0.0f) {
+                     if (w != 0.0f) {
                         H[i][n] = -r / w;
                      } else {
                         H[i][n] = -r / (eps * norm);
@@ -761,23 +761,23 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                H[n-1][n-1] = q / H[n][n-1];
                H[n-1][n] = -(H[n][n] - p) / H[n][n-1];
             } else {
-               cdiv(0.0,-H[n-1][n],H[n-1][n-1]-p,q);
+               cdiv(0.0f,-H[n-1][n],H[n-1][n-1]-p,q);
                H[n-1][n-1] = cdivr;
                H[n-1][n] = cdivi;
             }
-            H[n][n-1] = 0.0;
-            H[n][n] = 1.0;
+            H[n][n-1] = 0.0f;
+            H[n][n] = 1.0f;
             for (int i = n-2; i >= 0; i--) {
-               double ra,sa,vr,vi;
-               ra = 0.0;
-               sa = 0.0;
+               float ra,sa,vr,vi;
+               ra = 0.0f;
+               sa = 0.0f;
                for (int j = l; j <= n; j++) {
                   ra = ra + H[i][j] * H[j][n-1];
                   sa = sa + H[i][j] * H[j][n];
                }
                w = H[i][i] - p;
    
-               if (e[i] < 0.0) {
+               if (e[i] < 0.0f) {
                   z = w;
                   r = ra;
                   s = sa;
@@ -794,8 +794,8 @@ public class EigenvalueDecomposition implements java.io.Serializable {
                      x = H[i][i+1];
                      y = H[i+1][i];
                      vr = (d[i] - p) * (d[i] - p) + e[i] * e[i] - q * q;
-                     vi = (d[i] - p) * 2.0 * q;
-                     if (vr == 0.0 & vi == 0.0) {
+                     vi = (d[i] - p) * 2.0f * q;
+                     if (vr == 0.0f & vi == 0.0f) {
                         vr = eps * norm * (Math.abs(w) + Math.abs(q) +
                         Math.abs(x) + Math.abs(y) + Math.abs(z));
                      }
@@ -840,7 +840,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    
       for (int j = nn-1; j >= low; j--) {
          for (int i = low; i <= high; i++) {
-            z = 0.0;
+            z = 0.0f;
             for (int k = low; k <= Math.min(j,high); k++) {
                z = z + V[i][k] * H[k][j];
             }
@@ -860,11 +860,11 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    */
 
    public EigenvalueDecomposition (Matrix Arg) {
-      double[][] A = Arg.getArray();
+      float[][] A = Arg.getArray();
       n = Arg.getColumnDimension();
-      V = new double[n][n];
-      d = new double[n];
-      e = new double[n];
+      V = new float[n][n];
+      d = new float[n];
+      e = new float[n];
 
       issymmetric = true;
       for (int j = 0; (j < n) & issymmetric; j++) {
@@ -887,8 +887,8 @@ public class EigenvalueDecomposition implements java.io.Serializable {
          tql2();
 
       } else {
-         H = new double[n][n];
-         ort = new double[n];
+         H = new float[n][n];
+         ort = new float[n];
          
          for (int j = 0; j < n; j++) {
             for (int i = 0; i < n; i++) {
@@ -920,7 +920,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    @return     real(diag(D))
    */
 
-   public double[] getRealEigenvalues () {
+   public float[] getRealEigenvalues () {
       return d;
    }
 
@@ -928,7 +928,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    @return     imag(diag(D))
    */
 
-   public double[] getImagEigenvalues () {
+   public float[] getImagEigenvalues () {
       return e;
    }
 
@@ -938,10 +938,10 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 
    public Matrix getD () {
       Matrix X = new Matrix(n,n);
-      double[][] D = X.getArray();
+      float[][] D = X.getArray();
       for (int i = 0; i < n; i++) {
          for (int j = 0; j < n; j++) {
-            D[i][j] = 0.0;
+            D[i][j] = 0.0f;
          }
          D[i][i] = d[i];
          if (e[i] > 0) {
