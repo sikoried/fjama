@@ -190,7 +190,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
    
       float f = 0.0f;
       float tst1 = 0.0f;
-      float eps = (float) Math.pow(2.0f,-52.0f);
+      float eps = (float) Math.pow(2, -52);
       for (int l = 0; l < n; l++) {
 
          // Find small subdiagonal element
@@ -422,7 +422,7 @@ public class EigenvalueDecomposition implements java.io.Serializable {
       int n = nn-1;
       int low = 0;
       int high = nn-1;
-      float eps = (float) Math.pow(2.0f,-52.0f);
+      float eps = (float) Math.pow(2, -52);
       float exshift = 0.0f;
       float p=0,q=0,r=0,s=0,z=0,t,w,x,y;
    

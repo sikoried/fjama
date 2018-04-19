@@ -879,7 +879,7 @@ public class TestMatrix {
    /** Check magnitude of difference of scalars.f **/
 
    private static void check(float x, float y) {
-      float eps = (float) Math.pow(2.0f,-24.0f);
+      float eps = (float) Math.pow(2, -24);
       if (x == 0 & Math.abs(y) < 10*eps) return;
       if (y == 0 & Math.abs(x) < 10*eps) return;
       if (Math.abs(x-y) > 10*eps*Math.max(Math.abs(x),Math.abs(y))) {
@@ -910,7 +910,7 @@ public class TestMatrix {
    /** Check norm of difference of Matrices.f **/
 
    private static void check(Matrix X, Matrix Y) {
-      float eps = (float) Math.pow(2.0f,-24.0f);
+      float eps = (float) Math.pow(2, -24);
       if (X.norm1() == 0.f & Y.norm1() < 10*eps) return;
       if (Y.norm1() == 0.f & X.norm1() < 10*eps) return;
       if (X.minus(Y).norm1() > 1000*eps*Math.max(X.norm1(),Y.norm1())) {

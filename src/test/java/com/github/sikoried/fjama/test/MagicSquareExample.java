@@ -1,4 +1,4 @@
-package com.github.sikoried.fjama.examples;
+package com.github.sikoried.fjama.test;
 import com.github.sikoried.fjama.*; 
 import java.util.Date;
 
@@ -116,7 +116,7 @@ public class MagicSquareExample {
       print("\n      n     trace       max_eig   rank        cond      lu_res      qr_res\n\n");
  
       Date start_time = new Date();
-      float eps = (float) Math.pow(2.0f,-52.0f);
+      float eps = (float) Math.pow(2, -52);
       for (int n = 3; n <= 32; n++) {
          print(fixedWidthIntegertoString(n,7));
 

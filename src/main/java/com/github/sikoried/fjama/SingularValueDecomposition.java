@@ -252,8 +252,8 @@ public class SingularValueDecomposition implements java.io.Serializable {
 
       int pp = p-1;
       int iter = 0;
-      float eps = (float) Math.pow(2.0f,-52.0f);
-      float tiny = (float) Math.pow(2.0f,-966.0f);
+      float eps = (float) Math.pow(2, -52);
+      float tiny = (float) Math.pow(2,-128);
       while (p > 0) {
          int k,kase;
 
@@ -534,7 +534,7 @@ public class SingularValueDecomposition implements java.io.Serializable {
    */
 
    public int rank () {
-      float eps = (float) Math.pow(2.0f,-24.0f);
+      float eps = (float) Math.pow(2, -24);
       float tol = Math.max(m,n)*s[0]*eps;
       int r = 0;
       for (int i = 0; i < s.length; i++) {
